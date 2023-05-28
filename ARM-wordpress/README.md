@@ -1,9 +1,9 @@
 # Lab: Wykorzystanie ARM template do stworzenia strony internetowej z WordPress
 
-***W budowe!***
-
 ## Wymagania
-Aktywna subskrypcja w Azure i dostęp do portalu.
+Aktywna subskrypcja w Azure i dostęp do [portalu](https://portal.azure.com).
+
+> Nie masz konta w Azure? [Załóż darmowe konto](/https://azure.microsoft.com/en-us/free/) (uwaga, nowe konta posiadają dodatkowe środki, ale po ich wykorzystaniu zostanie obciążona Twoja karta. Pamiętaj o usuwaniu zasobów, jeżeli nie są potrzebne.)
 
 ## Wstęp
 ### Cel
@@ -22,7 +22,7 @@ Czas trwania: 45 minut
 2. Jaki jest koszt wdrożenia?
 3. Jakie zadania są związane z utrzymaniem rozwiązania?
 
-### Krok 2 - Przeanlizuj dostępny szablon
+### Krok 2 - Przeanalizuj dostępny szablon
 
 - Otwórz stronę z szablonem: [Quickstart template: Wordpress](https://learn.microsoft.com/en-us/samples/azure/azure-quickstart-templates/aci-wordpress/)
 
@@ -83,7 +83,7 @@ Czas trwania: 45 minut
 
 Możesz skonfigurować stronę wedle upodobań, zainstalować szablony, pluginy, dodawać posty lub informacje na temat swojej firmy lub bloga.
 
-### Kork 5 - Przeanalizuj infrastrukturę
+### Krok 5 - Przeanalizuj infrastrukturę
 - W portalu Azure znajdź Resource group ze swoim wdrożeniem i znajdź `wordpress-containerinstance`
 
 Zauważ, że po wybraniu "Containers" z menu po lewej widzisz "wordpress" oraz "mysql". W przypadku tego wdrożenia nie korzystasz z bazy danych w modelu SaaS lub PaaS, ale "hostujesz" własną instalację bazy w ramach usługi. Oznacza to, że nie masz super mocy w postaci kopii zapasowej, aktualizacji bezpieczeństwa ani integracji, dopóki ich sam(a) nie skonfigurujesz.
@@ -92,3 +92,7 @@ Containers > wordpress > connect > `bin/sh` i "Connect"
 <center><img src="./images/arm-wordpress11.JPG" width="600"></center>
 
 <center><img src="./images/arm-wordpress12.JPG" width="600"></center>
+
+### Kork 6 - Usuń zasoby
+
+Pamiętaj aby usunąć zasoby, jeżeli nie są już potrzebne.
