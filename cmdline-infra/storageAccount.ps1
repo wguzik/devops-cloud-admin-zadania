@@ -1,4 +1,4 @@
-# infra.ps1
+# storageAccount.sh1
 # Version: 0.0.1
 # Plik nie jest przeznaczony do uruchamiania jako pełnoprawny skrypt, to zapis instrukcji, które powinny być wykonywane krok po kroku
 
@@ -14,16 +14,12 @@ $environment = "dev"
 $rgName = $project + "-" + $environment
 $saName = $project + $environment + $rand
 
-
 # Stwórz Resource group
 # Zwróć uwagę na przekazane zmienne do parametrów oraz, że parametr Tag nie żywa wprost zmiennej typu string, ale przekazuje obiekt, co możesz poznać po 'zapisie @{}'
 New-AzResourceGroup -Location $location -Name $rgName -Tag @{Environment = $environment; Owner=$owner}
 
-# Wyświetl swoją Resource Group
-Get-AzResourceGroup -Location $location -Name $rgName
-
 # Alternatywnie możesz filtrować wynik poleceniem 
-# Get-AzResourceGroup | Where-Object {$_.ResourceGroupName -eq "webapp"}
+# Get-AzResourceGroup | Where-Object {$_.ResourceGroupName -eq "$rgName"}
 
 # Zapisz parametry Resource Group w zmiennej, aby móc jej używać przy tworzeniu pozostałych zasobów
 $myRG = Get-AzResourceGroup -Location $location -Name $rgName
@@ -44,7 +40,6 @@ $saNameAvailability
 # Jeżeli nazwa jest dostępna, utwórz Storage Account
 if ($saNameAvailability.NameAvailable) {
     New-AzStorageAccount -Name $saName -ResourceGroupName $myRG.ResourceGroupName -Location $myRG.Location -SkuName Standard_LRS -Kind StorageV2
-    # Parametry SkuName oraz Kind są związane z dostępnymi funkcjonalnościami i efektywnie kosztem usługi
 }
 # A co jeżeli nie?
 

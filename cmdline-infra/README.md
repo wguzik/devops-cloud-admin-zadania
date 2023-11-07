@@ -6,13 +6,14 @@ Aktywna subskrypcja w Azure i dostęp do [portalu](https://portal.azure.com).
 > Nie masz konta w Azure? [Załóż darmowe konto](/https://azure.microsoft.com/en-us/free/) (uwaga, nowe konta posiadają dodatkowe środki, ale po ich wykorzystaniu zostanie obciążona Twoja karta. Pamiętaj o usuwaniu zasobów, jeżeli nie są potrzebne.)
 
 ## Wstęp
+
 ### Cel
 Wykorzystanie PowerShella i az cli do tworzenia infrastruktury w Azure.
 
-Czas trwania: xx minut
+Czas trwania: 30 minut
 
 ### Polecenia PowerShell
-Polecenia PowerShella mają składnię `Verb-Noun -ParamName ParamValue`, gdzie
+Polecenia PowerShella mają składnię `Verb-Noun -ParamName ParamValue`, gdzie:
 - `Verb` opisuje akcję jaką chcesz wykonać, np. `New`, `Stop`,
 - `Noun` dotyczy typu obiektu wobec którego akcja ma być wykonana, np. `AzVM`,
 - `-ParamName` większość poleceń przyjmuje parametry, które opisują szczegóły obiektu, np. nazwa maszyny wirtualnej albo wartość nowej cechy, którą chcesz nadać, parametrów zwykle jest kilka. Większość poleceń wymaga podania wartości dla kilku wymaganych parametrów do właściwego działania.
@@ -48,29 +49,44 @@ Uwagi:
 - Nazwy poleceń nie są wrażliwie na wielkość liter, ale wartości parametrów mogą być, jeżeli platforma tego wymaga
 - Używa zmiennych, stałych itd., pozwala tworzyć własne funkcje
 
+### Polecenia AZ CLI
+Polecenia AZ CLI (często używane na Linuxach/MacOs) mają składnię `az <resourcename> <operacja> --<parameterName> parameterValue`.
+
+```PowerShell
+# Tworzy maszynę wirtualną o nazwie "MyVm" w Resource Group o nazwie "MyResourceGroup" i konkretnej wersji RedHat
+az vm create --name MyVm --resource-group MyResourceGroup --image RedHat:RHEL:7-RAW:7.4.2018010506
+```
+
+```PowerShell
+# Pokazuje przykłady użycia danego polecenia
+az vm create -h
+```
+
 ### Krok 0 - Uruchom Cloud Shell w Azure i sklonuj kod ćwiczeń Nawiguj w przeglądarce do [portal.azure.com](https://portal.azure.com), uruchom "Cloud Shell" i wybierz `Bash`.  Oficjalna dokumentacja: [Cloud Shell Quickstart](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/cloud-shell/quickstart.md).
 ```bash
-git clone https://github.com/wguzik/
+git clone https://github.com/wguzik/devops-cloud-admin-zadania
 ```
 
 > Poniższe kroki realizuje się za pomocą Cloud Shell.
 
+### Krok 1
 
-### Krok 1 - Naszkicuj architekturę
+Wybierz czy chcesz realizować skrypty w PowerShellu czy w Bashu.
 
-```mermaid
+Nawiguj do katalogu ze skryptami i otwórz wybrany za pomocą polecenia:
 
-graph LR;
- 
-  subgraph subscription
-    subgraph resourceGroup
-        StorageAccount
-    end
-  end
-  classDef plain fill:#ddd,stroke:#fff,stroke-width:1px,color:#000;
-
+```PowerShell
+Set-Location cmdline-infra
+code storageAccount.ps1
 ```
 
-### Krok 2 - Utwórz nazwy i zachowaj je w postaci zmiennych
+LUB
 
-Uruchamiaj po kolei polecenia z pliku `infra.ps1`.
+```bash
+cd cmdline-infra
+code storageAccount.sh
+```
+
+### Krok 2 - Wykonaj instrukcje
+
+Uruchamiaj po kolei polecenia z pliku `storageAccount.ps1` lub `storageAccount.sh` kopiując do wiersza poleceń w Cloud Shell.
