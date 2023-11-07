@@ -45,7 +45,7 @@ Uwagi:
   # wylistuje wszystkie Storage Account, a później spróbuje je usunąć, BARDZO destrukcyjne polecenie
   Get-AzStorageAccount | Remove-AzStorageAccount
   ```
-- Polecenia nie są wrażliwie na wielkość liter, ale wartości parametrów mogą być, jeżeli platforma tego wymaga
+- Nazwy poleceń nie są wrażliwie na wielkość liter, ale wartości parametrów mogą być, jeżeli platforma tego wymaga
 - Używa zmiennych, stałych itd., pozwala tworzyć własne funkcje
 
 ### Krok 0 - Uruchom Cloud Shell w Azure i sklonuj kod ćwiczeń Nawiguj w przeglądarce do [portal.azure.com](https://portal.azure.com), uruchom "Cloud Shell" i wybierz `Bash`.  Oficjalna dokumentacja: [Cloud Shell Quickstart](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/cloud-shell/quickstart.md).
@@ -64,46 +64,13 @@ graph LR;
  
   subgraph subscription
     subgraph resourceGroup
-    direction LR;
-        subgraph VNet
-            direction LR;
-            subgraph Subnet1
-                direction LR;
-                VM1;
-            end
-            subgraph Subnet2
-                direction LR;
-                VM2;
-            end
-        end
         StorageAccount
     end
   end
   classDef plain fill:#ddd,stroke:#fff,stroke-width:1px,color:#000;
-  classDef k8s fill:#326ce5,stroke:#fff,stroke-width:4px,color:#fff;
-  classDef cluster fill:#fff,stroke:#bbb,stroke-width:2px,color:#326ce5;
-  class ingress,service,pod1,pod2 k8s;
-  class client plain;
-  class cluster cluster;
 
 ```
 
 ### Krok 2 - Utwórz nazwy i zachowaj je w postaci zmiennych
-```PowerShell
-$project = "wsbwg"
-$rand = Get-Random -Minimum 1024 -Maximum 10240
-$location = "West Europe"
-$environment = "dev"
-$rgName = $project + $environment
-```
 
-
-### Krok 3 - Utwórz bazowe zasoby
-```PowerShell
-New-AzResourceGroup -location $location -name $rgName
-
-$rg = Get-AzResourceGroup -location $location -name $rgName 
-
-New-AzVirtualNetwork
-
-```
+Uruchamiaj po kolei polecenia z pliku `infra.ps1`.
