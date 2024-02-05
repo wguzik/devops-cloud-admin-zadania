@@ -1,0 +1,29 @@
+# docker-compose.yml
+version: '3'
+volumes:
+  prometheus-vol:
+    driver: local
+  grafana-vol:
+    driver: local
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--storage.tsdb.retention.time=14d'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yaml
+      - ./prometheus-vol:/prometheus
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-vol:/var/lib/grafana
+  node_exporter_1:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
