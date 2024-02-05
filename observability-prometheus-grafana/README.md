@@ -69,3 +69,5 @@ Grafana słuzy do tworzenia wykresów w oparciu o dane.
 
 
 `Section 2` odpowiada za ściągnięcie i uruchomienie Grafany.
+
+http://host.docker.internal:9090
