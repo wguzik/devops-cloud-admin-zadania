@@ -35,6 +35,7 @@ sum(rate(http_requests_total{job="prometheus"}[2d]
 Cheat sheet: [https://promlabs.com/promql-cheat-sheet/](https://promlabs.com/promql-cheat-sheet/)
 
 Typy metryk:
+
 - counter
 - gauge
 - histogram
@@ -53,57 +54,28 @@ co pozwala trzymac szczegóły konfiguracji w repozytorium.
 
 ## Stack
 
-### Prometheus
-
-Prometheus potrzebuje wskazania, skąd ściąga metryki. W przypadku docker-compose jest to plik `prometheus.yaml`, w który posiada definicje kontenerów, z których powinien ściągac metryki.
-
-Odkomentuj sekcję i uruchom:
-
 ```bash
 docker-compose up
 ```
 
-Otwórz prometheusa po adresem: [http://localhost:9090](http://localhost:9090)
+### Prometheus
 
-Wyłącz usługę.
+Prometheus potrzebuje wskazania, skąd ściąga metryki. W przypadku docker-compose jest to plik `prometheus.yaml`, w który posiada definicje kontenerów, z których powinien ściągac metryki.
 
-```bash
-docker-compose down -v
-```
+Otwórz Prometheusa po adresem: [http://localhost:9090](http://localhost:9090).
+Zobacz metryki po adresem: [http://localhost:9090/metrics](http://localhost:9090/metrics).
 
 ### Alert Manager
 
 Prometheus posiada funkcję tworzenia alertów, ale ich obsługa jest bardzo uboga. Alert Manager pozwala na zarządzanie alertami, np. wygaszenie na czas wdroenia lub integrację z innymi systemami.
 
-Odkomentuj sekcję i uruchom:
-
-```bash
-docker-compose up
-```
-
-Otwórz Alert Manager po adresem: [http://localhost:9093](http://localhost:9093)
-
-Wyłącz usługę.
-
-```bash
-docker-compose down -v
-```
+Otwórz Alert Manager po adresem: [http://localhost:9093](http://localhost:9093).
 
 ### Grafana
 
 Grafana słuzy do tworzenia wykresów w oparciu o dane.
 
-```bash
-docker-compose up
-```
-
-Otwórz Alert Manager po adresem: [http://localhost:9093](http://localhost:9093)
-
-Wyłącz usługę.
-
-```bash
-docker-compose down -v
-```
+Otwórz Alert Manager po adresem: [http://localhost:3000](http://localhost:3000).
 
 ### Nginx
 
@@ -111,3 +83,11 @@ Nginx udostępnia status, jednak nie jest on w formacie zjadliwym dla Prometheus
 Z tego powodu jest doinstalowana usługa `nginx-exporter`, która "tłumaczy" metryki nginx na format akceptowalny przez Prometheusa.
 
 W konfiguracji Prometheusa `prometheus.yml` wskazanie jest na `nginx-exporter` a nie `nginx` jako taki.
+
+Otwórz stronę po adresem: [http://localhost:8081](http://localhost:8081).
+
+Zobacz metryki po adresem: [http://localhost:8081/metrics](http://localhost:8081/metrics).
+
+```bash
+docker-compose down -v
+```
