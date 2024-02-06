@@ -1,4 +1,4 @@
-# Lab: Wykorzystanie narzędzi konsoli: PowerShell i az cli do tworzenia infrastruktury
+# Lab: Zapoznanie się z Prometheusem i Grafaną
 
 ## Wymagania
 
