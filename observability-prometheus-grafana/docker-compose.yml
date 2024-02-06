@@ -1,0 +1,63 @@
+version: "3"
+networks:
+  monitoring:
+    driver: bridge
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  alertmanager-data:
+    driver: local
+    
+services:  
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+
+  alertmanager:
+    image: prom/alertmanager:v0.23.0
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - "./alertmanager:/config"
+      - alertmanager-data:/data
+    command: 
+      - '--config.file=/config/alertmanager.yml'
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=ops
+      - GF_SECURITY_ADMIN_PASSWORD=Str0ngPass! #nope!
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter
+    restart: unless-stopped
+    ports:
+      - "9113:9113"
+    command: 
+      - '-nginx.scrape-uri=http://host.docker.internal:8081/metrics'
+ 
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    volumes: 
+      - ./nginx/conf:/etc/nginx/conf.d
+    ports:
+      - "8081:80"

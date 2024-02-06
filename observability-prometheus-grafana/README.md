@@ -14,8 +14,7 @@ Grafana przoduje w prezentacji danych.
 
 Uruchomienie lokalne instancji Prometheusa i Grafany. Zapoznanie się z podstawowymi funkcjami Prometheusa i Grafany.
 
-Czas trwania: 30 minut
-
+Czas trwania: 45 minut
 
 ### PromQL
 
@@ -41,11 +40,21 @@ Typy metryk:
 - histogram
 - summary
 
+### Dodatkowa konfiguracja
+
+Niektóre kontenery mają wskazania do lokalnych plików, np:
+
+```yaml
+    volumes:
+      - ./prometheus:/etc/prometheus
+```
+
+co pozwala trzymac szczegóły konfiguracji w repozytorium.
+
 ## Stack
 
 ### Prometheus
 
-`Section 1` odpowiada za ściągnięcie i uruchomienie aplikacji Prometheus.
 Prometheus potrzebuje wskazania, skąd ściąga metryki. W przypadku docker-compose jest to plik `prometheus.yaml`, w który posiada definicje kontenerów, z których powinien ściągac metryki.
 
 Odkomentuj sekcję i uruchom:
@@ -56,6 +65,23 @@ docker-compose up
 
 Otwórz prometheusa po adresem: [http://localhost:9090](http://localhost:9090)
 
+Wyłącz usługę.
+
+```bash
+docker-compose down -v
+```
+
+### Alert Manager
+
+Prometheus posiada funkcję tworzenia alertów, ale ich obsługa jest bardzo uboga. Alert Manager pozwala na zarządzanie alertami, np. wygaszenie na czas wdroenia lub integrację z innymi systemami.
+
+Odkomentuj sekcję i uruchom:
+
+```bash
+docker-compose up
+```
+
+Otwórz Alert Manager po adresem: [http://localhost:9093](http://localhost:9093)
 
 Wyłącz usługę.
 
@@ -67,7 +93,21 @@ docker-compose down -v
 
 Grafana słuzy do tworzenia wykresów w oparciu o dane.
 
+```bash
+docker-compose up
+```
 
-`Section 2` odpowiada za ściągnięcie i uruchomienie Grafany.
+Otwórz Alert Manager po adresem: [http://localhost:9093](http://localhost:9093)
 
-http://host.docker.internal:9090
+Wyłącz usługę.
+
+```bash
+docker-compose down -v
+```
+
+### Nginx
+
+Nginx udostępnia status, jednak nie jest on w formacie zjadliwym dla Prometheusa.
+Z tego powodu jest doinstalowana usługa `nginx-exporter`, która "tłumaczy" metryki nginx na format akceptowalny przez Prometheusa.
+
+W konfiguracji Prometheusa `prometheus.yml` wskazanie jest na `nginx-exporter` a nie `nginx` jako taki.
