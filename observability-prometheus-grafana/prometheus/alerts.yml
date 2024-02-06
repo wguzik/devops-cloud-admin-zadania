@@ -1,0 +1,6 @@
+groups:
+  - name: AppDown
+    rules:
+      - alert: InstanceDown 
+        expr: up{job="apps"} < 1 
+        for: 1m

@@ -1,0 +1,13 @@
+
+route:
+  receiver: 'mail'
+  repeat_interval: 1h
+  group_by: [ alertname ]
+receivers:
+  - name: 'mail'
+    email_configs:
+      - smarthost: 'smtp.company.com:465'
+        auth_username: 'serviceaccount@company.com'
+        auth_password: ""
+        from: 'alert@company.com'
+        to: 'devs@company.com'
