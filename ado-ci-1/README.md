@@ -10,7 +10,7 @@
 
 ## Wstęp
 
-Aby usprawnić 
+Stwórz podstawowy proces CI
 
 
 ### Cel
