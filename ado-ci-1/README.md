@@ -45,6 +45,7 @@ Zmień branch, będziesz na nim wprowadzać zmiany.
 
 ```bash
 git checkout -b feature/ci-development
+ git push --set-upstream origin feature/ci-development
 ```
 
 ## Krok 4
@@ -65,7 +66,7 @@ Z zakładki "Connect" i dostępnych tam opcji wybierz "GitHub".
 
 Z zakładki "Select" wybierz `swapi-caching` (lub inna nazwa nowego forka).
 
-Z zakładki "Configure" wybierz "Existing Azure Pipelines YAML file" (na samym dole) - z kontekstowego menu wybierz branch "main" i plik `pipeline-ci.yaml`.
+Z zakładki "Configure" wybierz "Existing Azure Pipelines YAML file" (na samym dole) - z kontekstowego menu wybierz branch `feature/ci-development` i plik `pipeline-ci.yaml`.
 
 Potwierdź wybierając "Continue".
 
@@ -133,9 +134,7 @@ git commit -am "Add npm configuration for local feed"
 git push
 ```
 
-Wejdź na swojego GitHuba i załóż Pull Request.
-
-Na poziomie pipeline powinien się uruchomić job, obserwuj jak jak realizują się kroki.
+Otwórz swoj pipeline, wybierz "Run pipeline", a następnie swój branch `feature/ci-development` z listy. Obserwuj progres, znajdź task "npmAuthenticate". Jeżeli pipeline nie nie udał się na tym kroku, sprawdź jeszcze raz ustawienie "pipeline authentication" i spróbuj ponownie.
 
 ## Krok 8
 
@@ -244,4 +243,4 @@ git commit -am "Enable docker push"
 git push
 ```
 
-Prześledź odpalenie pipeline a następnie nawiguj do Azure Portal, znajdź swój Container Registry, wybierz "Repositories" i znajdź zbudowany i opublikowany obraz.
+Uruchom pipeline, śledź wykonanie, a następnie nawiguj do Azure Portal, znajdź swój Container Registry, wybierz "Repositories" i znajdź zbudowany i opublikowany obraz.
