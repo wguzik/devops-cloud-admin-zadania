@@ -149,15 +149,18 @@ W Azure DevOps istnieje dedykowany task [Docker@2](https://learn.microsoft.com/e
 W definicji pipeline znajduje się już zaadaptowany task:
 
 ```yaml
-#    - task: Docker@2
-#      displayName: Build and push an image to container registry
-#      inputs:
-#        command: buildAndPush
-#        repository: $(imageRepository)
-#        dockerfile: $(dockerfilePath)
-#        containerRegistry: $(dockerRegistryServiceConnection)
-#        tags: |
-#          $(tag)
+## Sekcja Docker push
+#  - task: Docker@2
+#    displayName: Build and push an image to container registry
+#    inputs:
+#      command: buildAndPush
+#      repository: swapi-caching # efektywnie nazwa aplikacji
+#      dockerfile: $(Build.SourcesDirectory)/Dockerfile # wskazanie Dockerfile
+#      containerRegistry: <your-service-connection-name> #nazwa Service Connection
+#      tags: |
+#        $(Build.BuildNumber) # tag, może być kilka
+#        latest
+
 ```
 
 Obecnie nie posiadasz jeszcze Container Registry oraz Twoja organizacja nie posiada "Service Connection", niezbędnego do uwierzytelnienia się aby móc wysłać obrazy do Container Registry.
@@ -194,6 +197,14 @@ acr_login = "az acr login -n acrwgdev"
 acr_name = "acrwgdev"
 ```
 
+Znajdź KeyVault oraz wartości kluczy `acr-username` i `acr-password`.
+
+```bash
+az keyvault secret show --vault-name <vault-name> --name acr-username --query "value" -o tsv 
+
+az keyvault secret show --vault-name <vault-name> --name acr-password --query "value" -o tsv 
+```
+
 ## Krok 11
 
 Stwórz `Connection Service` między Azure DevOps a `Container Registry`.
@@ -204,14 +215,25 @@ Z części "Pipelines" wybierz "Service connections" i w prawym górnym rogu wyb
 
 W wyszukiwarce wpisz "Docker Registry" i wybierz dostępną opcję.
 
-W polu "Registry type" wybierz "Azure Container Registry".
+W polu "Docker registry" podaj pełen adres, np. `acrwgdev.azurecr.io` (wartość `login server`), którą możesz znaleźć w detalach swojego `Container Registry`.
 
-W polu "Authentication Type" wybierz "Service principal".
+W polu "Docker ID" podaj wartość `acr-username`
 
-W polu Subscription powinna się wyświetlić Twoja subskrypcja.
-Pojawi się pop-up do logowania (obserwuj status, być moze ad-blocker je blokuje), zaloguj się poświadczeniami do konta Merito, którego używasz do logowania się do Azure.
-Poczekaj chwilę aż pojawi się również Twój Container Registry.
+W polu "Docker Password" podaj wartość `acr-password`.
 
 W polu "Service connection name" nadaj znaczącą nazwę, będziesz jej potrzebować w pipeline.
 
-Zaznacz checkbox "Grant access permission to all pipelnes".
+Zaznacz checkbox: "Grant access permission to all pipelnes".
+
+## Krok 12
+
+Odkomentuj fragment `##Sekcja Docker push` i zamień `<your-service-connection-name>` na nazwę "Service connection" z poprzedniego kroku.
+
+Zacommituj zmianę.
+
+```bash
+git commit -am "Enable docker push"
+git push
+```
+
+Prześledź odpalenie pipeline a następnie nawiguj do Azure Portal, znajdź swój Container Registry, wybierz "Repositories" i znajdź zbudowany obraz.
