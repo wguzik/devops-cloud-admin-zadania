@@ -16,11 +16,13 @@ Proces Contiunous Delivery zazwyczaj kończy się na etapie opublikowania aplika
 
 ## Cel
 
-Stwórz podstawowy proces Continuous Integration/Delivery korzystający z Artifactory oraz Azure Container Registry.
+Stwórz podstawowy proces Continuous Integration/Delivery korzystający z Artifactory w trybie `upstream` oraz Azure Container Registry do hostowania obrazów dockerowych.
 
 ## Krok 1
 
-Zrób fork repozytorium [swapi-caching](https://github.com/wguzik/swapi-caching/fork)
+Zrób fork repozytorium [swapi-caching](https://github.com/wguzik/swapi-caching/fork).
+
+> Jeżeli posiadasz już fork i pipeline wykonane w ramach poprzednich zajęć - wykonaj NOWY fork (z nową nazwą). Nie musisz tworzyć nowego projektu w Azure DevOps, stwórz nowy, równoległy pipeline.
 
 ## Krok 2
 
@@ -31,6 +33,7 @@ git clone https://github.com/<your-gh-org>/swapi-caching.git
 ```
 
 Odtwórz zmienne środowiskowe (`.env`) i uruchom docker-compose aby zweryfkować czy aplikacja działa:
+
 ```bash
 mv .env.example .env
 docker-compose up
@@ -46,7 +49,11 @@ git checkout -b feature/ci-development
 
 ## Krok 4
 
+> Nie musisz tworzyć nowej organizacji, jeżeli wykonałeś/aś ten krok w ramach poprzednich zajęć.
+
 Jeżeli nie posiadasz, załóż [organizację w Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops).
+
+> Nie musisz tworzyć nowego projektu, jeżeli wykonałeś/aś ten krok w ramach poprzednich zajęć - możesz stworzyć nowy pipeline w ramach tego samego projektu ze wskazaniem na inne repozytorium, czyli nowy fork.
 
 Załóż [prywatny projekt](https://learn.microsoft.com/en-us/azure/devops/organizations/projects/create-project?view=azure-devops&tabs=browser#create-a-project) o nazwie `swapi-caching` (lub pokrewnej dla łatwej nawigacji).
 
@@ -56,7 +63,7 @@ Wybierz z lewego menu "Pipelines" (niebieska rakieta), następnie z prawego gór
 
 Z zakładki "Connect" i dostępnych tam opcji wybierz "GitHub".
 
-Z zakładki "Select" wybierz `swapi-caching`.
+Z zakładki "Select" wybierz `swapi-caching` (lub inna nazwa nowego forka).
 
 Z zakładki "Configure" wybierz "Existing Azure Pipelines YAML file" (na samym dole) - z kontekstowego menu wybierz branch "main" i plik `pipeline-ci.yaml`.
 
@@ -69,14 +76,14 @@ Z zakładki "Review" w prawym górnym rogu wybierz "Run" i obserwuj zachowanie p
 Stwórz feed dla NPM.
 
 Aplikacje napisane w JavaScript zazwyczaj korzystają z package managera `npm`. Listę niezbędnych bibliotek znajdziesz w pliku `packages.json`. Listę wszystkich zależności znajdzies w `package-lock.json`.
-Polecenie `npm install` ściąga i konfiguruje te biblioteki, znajdziesz je lokalnie w katalogu `node_modules` (nie musisz go wykonywać).
+Polecenie `npm install` ściąga i konfiguruje te biblioteki, znajdziesz je lokalnie w katalogu `node_modules` (nie musisz go wykonywać lokalnie - jest wpisane w `Dockerfile`).
 Ze względu na wygodę i możliwość kontroli chcesz skorzystać z lokalnego repozytorium, które de facto będzie ściągać paczki z `upstreamu`, ale `npm` będzie się do niego odwoływać.
 
-Taka konfiguracja jest często stosowana, kiedy regularnie ściągasz te same paczki i chcesz je mieć "bliżej" lub istnieją ograniczenia w ruchu sieciowym i dzięki temu nie ściągasz paczek "z internetu", ale z lokalnej instancji.
+Taka konfiguracja jest często stosowana, kiedy regularnie ściągasz te same paczki i chcesz je mieć "bliżej" lub istnieją ograniczenia w ruchu sieciowym i dzięki temu nie ściągasz paczek "z internetu", ale z lokalnej instancji. Możesz dzięki temu dbać o dostępność odpowiednich wersji (jeżeli zdecydujesz się je "skopiować" do siebie), wykonywać skany bezpieczeństwa i ograniczyć ruch sieciowy.
 
 ## Krok 7
 
-[Skonfiguruj feed](https://learn.microsoft.com/en-us/azure/devops/artifacts/get-started-npm?view=azure-devops&tabs=Windows#create-a-feed), ale tylko krok `Create feed`, koniecznie z zaznaczoną opcją "Upstream sources".
+[Skonfiguruj feed](https://learn.microsoft.com/en-us/azure/devops/artifacts/get-started-npm?view=azure-devops&tabs=Windows#create-a-feed), wykonaj jedynie krok `Create feed`, koniecznie z zaznaczoną opcją "Upstream sources".
 
 W tym momencie w ramach projektu posiadasz własne repozytorium paczek.
 
@@ -108,20 +115,22 @@ Nie wykonuj kroków z "Setup credentials". One są przeznaczone dla użytkownika
 
 Skonfiguruj pipeline tak, aby się odwoływał do repozytorium. Aby to zrobić, najlepiej skorzystać z dedykowanego taska. Upewnij się, że build pipeline ma właściwe uprawnienia. Skorzystaj z tego fragmentu dokumentacji: [pipeline authentication](https://learn.microsoft.com/en-us/azure/devops/artifacts/npm/npmrc?view=azure-devops&tabs=windows%2Cyaml#pipeline-authentication).
 
-Niezbędny task znajduje się już definicji pipeline (linie 31-34):
+Niezbędny task znajduje się już definicji pipeline:
 
 ```yaml
-  #- task: npmAuthenticate@0
-  #  inputs:
-  #    workingFile: .npmrc           
-  #    customEndpoint:  
+## Sekcja Artifacts i NPM
+#  - task: npmAuthenticate@0
+#    inputs:
+#      workingFile: .npmrc
+#      customEndpoint:
 ```
 
-odkomentuj ten fragment, zacommituj zmianę i wypchnij na branch.
+Odkomentuj ten fragment, zacommituj zmianę i wypchnij na branch.
 
 ```bash
 git add .
 git commit -am "Add npm configuration for local feed"
+git push
 ```
 
 Wejdź na swojego GitHuba i załóż Pull Request.
@@ -130,7 +139,7 @@ Na poziomie pipeline powinien się uruchomić job, obserwuj jak jak realizują s
 
 ## Krok 8
 
-Wejdź do "Artifacts" i otwórz swój feed npm. Zauważ, że są widoczne rozmaite paczki. Porównaj nazwy z zawartością `package-lock.json`.
+Wejdź do "Artifacts" i otwórz swój feed npm. Zauważ, że są widoczne rozmaite paczki. Z ciekawości porównaj nazwy z zawartością `package-lock.json`.
 
 ## Krok 9
 
@@ -145,8 +154,7 @@ Obecny w pipeline krok uruchamia docker compose, jednak nigdzie nie zachowujesz 
 
 W Azure DevOps istnieje dedykowany task [Docker@2](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml).
 
-
-W definicji pipeline znajduje się już zaadaptowany task:
+W definicji pipeline znajduje się już wstępnie zaadaptowany task:
 
 ```yaml
 ## Sekcja Docker push
@@ -163,12 +171,11 @@ W definicji pipeline znajduje się już zaadaptowany task:
 
 ```
 
-Obecnie nie posiadasz jeszcze Container Registry oraz Twoja organizacja nie posiada "Service Connection", niezbędnego do uwierzytelnienia się aby móc wysłać obrazy do Container Registry.
+Obecnie nie posiadasz jeszcze `Container Registry` oraz Twoja organizacja nie posiada "Service Connection", niezbędnego do uwierzytelnienia się aby móc wysłać obrazy do `Container Registry`.
 
 ## Krok 10
 
-Stwórz Container Registry za pomocą terraform:
-
+Stwórz `Container Registry` za pomocą terraform:
 
 ```bash
 cd infra
@@ -178,7 +185,7 @@ terraform init
 terraform validate
 ```
 
-W pliku `terraform.tfvars` wprowadź swoje inicjały dla zmiennej `project`, dzięki temu stworzone obiekty będą mieć możliwie unikalną nazwę.
+W pliku `terraform.tfvars` wprowadź swoje inicjały (najlepiej więcej niż dwa znaki, litery) dla zmiennej `project`, dzięki temu stworzone obiekty będą mieć możliwie unikalną nazwę.
 
 Nazwa `Container Registry` musi być unikalna globalnie, a nazwa zostanie wygenerowana przez terraform na podstawie podanych wartości parametrów.
 
@@ -195,6 +202,7 @@ Outputs:
 
 acr_login = "az acr login -n acrwgdev"
 acr_name = "acrwgdev"
+kv_name = "kv-wg-dev"
 ```
 
 Znajdź KeyVault oraz wartości kluczy `acr-username` i `acr-password`.
@@ -207,7 +215,7 @@ az keyvault secret show --vault-name <vault-name> --name acr-password --query "v
 
 ## Krok 11
 
-Stwórz `Connection Service` między Azure DevOps a `Container Registry`.
+Stwórz "Connection Service" między Azure DevOps a `Container Registry`.
 
 Z głównego widoku projektu w Azure DevOps wybierz "Project settings" z menu po lewej na dole (z zębatką).
 
@@ -236,4 +244,4 @@ git commit -am "Enable docker push"
 git push
 ```
 
-Prześledź odpalenie pipeline a następnie nawiguj do Azure Portal, znajdź swój Container Registry, wybierz "Repositories" i znajdź zbudowany obraz.
+Prześledź odpalenie pipeline a następnie nawiguj do Azure Portal, znajdź swój Container Registry, wybierz "Repositories" i znajdź zbudowany i opublikowany obraz.
