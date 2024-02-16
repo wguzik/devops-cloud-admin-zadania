@@ -244,3 +244,11 @@ git push
 ```
 
 Uruchom pipeline, śledź wykonanie. Coś nie gra? Przeanalizuj błąd, usuń fragment komentarza, zacommituj i wyślij zmianę. Uruchom pipeline ponownie, a następnie nawiguj do Azure Portal, znajdź swój Container Registry, wybierz "Repositories" i znajdź zbudowany i opublikowany obraz.
+
+## Krok 13
+
+Usuń infrastrukturę:
+
+```bash
+terraform destroy
+```
