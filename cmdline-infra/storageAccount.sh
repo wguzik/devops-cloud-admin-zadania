@@ -6,7 +6,7 @@
 # az login
 
 # Zmienne oraz genereowanie nazw obiektów
-PROJECT="wsbwg"
+PROJECT="mywg"
 OWNER="WG"
 LOCATION="westeurope"
 ENVIRONMENT="dev"
