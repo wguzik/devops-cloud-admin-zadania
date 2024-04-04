@@ -6,7 +6,7 @@
 # Connect-AzAccount
 
 # Zmienne oraz genereowanie nazw obiektów
-$project = "wsbwg"
+$project = "mywg"
 $owner = "WG"
 $rand = Get-Random -Minimum 1024 -Maximum 10240
 $location = "West Europe"
