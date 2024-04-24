@@ -19,7 +19,7 @@ $HttpStatus = @{
     StatusDescription = $response.StatusDescription
 }
 
-$date = get-date -Format "yyyy-MM-dd-HH:mm"
+$date = get-date -Format "yyyy-MM- dd-HH:mm"
 
 $scrapData = @{
     Date = $date 
