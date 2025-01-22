@@ -1,6 +1,3 @@
-# devops-cloud-admin-zadania
-Repozytorium z zadaniami z obszaru DevOps i Azure Cloud
-
 # Laboratorium: Infrastruktura Azure z Terraform
 
 ## Wymagania wstępne
@@ -20,37 +17,49 @@ To laboratorium przeprowadzi Cię przez proces tworzenia infrastruktury Azure pr
 ## Rozpoczęcie pracy
 
 1. Sklonuj to repozytorium:
+2. 
 ```bash
-git clone <adres-repozytorium>
-cd <nazwa-repozytorium>
+https://github.com/wguzik/devops-cloud-admin-zadania.git
+cd windows-terminal
 ```
 
-2. Zaktualizuj plik `terraform.tfvars` swoimi wartościami:
+1. Zaktualizuj plik `terraform.tfvars` swoimi wartościami:
+
+Przygotuj plik `terraform.tfvars` i wypełnij go swoimi wartościami:
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
+
+ 
 ```hcl
 prefix         = "twoj-prefix"    # Prefix dla nazw zasobów
 location       = "westeurope"     # Wybrany region Azure
 admin_username = "azureuser"      # Nazwa użytkownika administratora VM
 admin_password = "TwojeB@rdzoSilneHaslo123!"  # Hasło administratora VM (musi spełniać wymagania Azure)
 ```
+> WAŻNE: Hasło musi spełniać wymagania Azure!
+> WAŻNE2: Nie commituj tego hasła do repozytorium. Maszyna i tak powinna być zniszczona po zakończeniu laboratorium.
+> WAŻNE3: Hasło powinno być wygenerowane automatycznie i zapisane w Azure Key Vault.
 
-3. Zainicjuj Terraform:
+1. Zainicjuj Terraform:
 ```bash
 terraform init
 ```
 
-4. Przejrzyj planowane zmiany:
+1. Przejrzyj planowane zmiany:
 ```bash
 terraform plan
 ```
 
-5. Wdróż konfigurację:
+1. Wdróż konfigurację:
 ```bash
 terraform apply
 ```
 
-6. Po zakończeniu wdrożenia możesz znaleźć publiczny adres IP maszyny wirtualnej w Azure Portal lub wykonując:
+1. Po zakończeniu wdrożenia możesz znaleźć publiczny adres IP maszyny wirtualnej w Azure Portal lub wykonując:
 ```bash
-terraform output public_ip
+terraform output
 ```
 
 ## Dostęp do maszyny wirtualnej

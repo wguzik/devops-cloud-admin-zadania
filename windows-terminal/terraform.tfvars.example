@@ -1,0 +1,4 @@
+prefix         = "demo"
+location       = "northeurope"
+admin_username = "azureuser"
+admin_password = "YourSecurePassword123!"  # Change this! 
