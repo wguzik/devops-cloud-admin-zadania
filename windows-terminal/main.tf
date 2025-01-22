@@ -87,7 +87,8 @@ resource "azurerm_virtual_machine_extension" "kubectl_install" {
   type                 = "CustomScriptExtension"
   type_handler_version = "1.10"
 
-  settings = <<SETTINGS
+
+  zamien-na-dsc-settings = <<SETTINGS
     {
         "commandToExecute": "powershell.exe -Command \"[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Write-Host 'Installing kubectl...'; Invoke-WebRequest -Uri 'https://dl.k8s.io/release/v1.29.0/bin/windows/amd64/kubectl.exe' -OutFile 'C:\\Windows\\System32\\kubectl.exe'; Write-Host 'Installing Helm...'; Invoke-WebRequest -Uri 'https://get.helm.sh/helm-v3.13.3-windows-amd64.zip' -OutFile 'helm.zip'; Expand-Archive -Path 'helm.zip' -DestinationPath '.'; Move-Item -Path '.\\windows-amd64\\helm.exe' -Destination 'C:\\Windows\\System32\\helm.exe' -Force; Remove-Item -Path 'helm.zip' -Force; Remove-Item -Path 'windows-amd64' -Recurse -Force\""
     }
