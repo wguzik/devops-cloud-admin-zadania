@@ -1,23 +1,21 @@
 # Laboratorium: Infrastruktura Azure z Terraform
 
+> ! NIE DZIAŁA !
+
 ## Wymagania wstępne
 
 - Aktywna subskrypcja Azure
 - Zainstalowany lokalnie Terraform
 - Zainstalowane i skonfigurowane Azure CLI
 
-## Przegląd laboratorium
+## Cel
 
-To laboratorium przeprowadzi Cię przez proces tworzenia infrastruktury Azure przy użyciu Terraform, w tym:
-- Sieć wirtualna (Virtual Network)
-- Maszyna wirtualna Windows z 4 procesorami
-- Publiczny adres IP
-- Preinstalowane narzędzia (kubectl i Helm)
+Stworzenie maszyny wirtualnej, która będzie służyć jako terminal do pracy z kontenerami, w tym kubernetes.
 
 ## Rozpoczęcie pracy
 
 1. Sklonuj to repozytorium:
-2. 
+
 ```bash
 https://github.com/wguzik/devops-cloud-admin-zadania.git
 cd windows-terminal
@@ -29,55 +27,54 @@ Przygotuj plik `terraform.tfvars` i wypełnij go swoimi wartościami:
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
-```
 
+```
  
-```hcl
+```bash
 prefix         = "twoj-prefix"    # Prefix dla nazw zasobów
 location       = "westeurope"     # Wybrany region Azure
 admin_username = "azureuser"      # Nazwa użytkownika administratora VM
-admin_password = "TwojeB@rdzoSilneHaslo123!"  # Hasło administratora VM (musi spełniać wymagania Azure)
 ```
-> WAŻNE: Hasło musi spełniać wymagania Azure!
-> WAŻNE2: Nie commituj tego hasła do repozytorium. Maszyna i tak powinna być zniszczona po zakończeniu laboratorium.
-> WAŻNE3: Hasło powinno być wygenerowane automatycznie i zapisane w Azure Key Vault.
 
-1. Zainicjuj Terraform:
+```bash
+subscription_id=$(az account show --query="id")
+sed -i "s/YourSubscriptionID/$subscription_id/g" terraform.tfvars
+```
+
+1. Zainicjuj Terraform, zweryfikuj konfigurację:
 ```bash
 terraform init
-```
-
-1. Przejrzyj planowane zmiany:
-```bash
+terraform validate
 terraform plan
 ```
 
 1. Wdróż konfigurację:
+
 ```bash
 terraform apply
 ```
 
 1. Po zakończeniu wdrożenia możesz znaleźć publiczny adres IP maszyny wirtualnej w Azure Portal lub wykonując:
+
 ```bash
 terraform output
 ```
 
+1. Wyciągnij nazwę użytkownika i hasło do maszyny wirtualnej z Terraform:
+
+```bash
+az keyvault secret show --vault-name $(terraform output key_vault_name) --name $(terraform output vm_secret_username) --query value -o tsv
+az keyvault secret show --vault-name $(terraform output key_vault_name) --name $(terraform output vm_secret_password) --query value -o tsv
+```
+
 ## Dostęp do maszyny wirtualnej
 
-1. Połącz się z maszyną wirtualną używając protokołu RDP (Pulpit Zdalny):
-   - Użyj publicznego adresu IP
-   - Nazwa użytkownika: wartość z admin_username w terraform.tfvars
-   - Hasło: wartość z admin_password w terraform.tfvars
+1. Połącz się z maszyną wirtualną używając protokołu RDP.
 
-2. Preinstalowane narzędzia:
-   - kubectl (interfejs wiersza poleceń Kubernetes)
-   - Helm (menedżer pakietów Kubernetes)
 
-3. Weryfikacja instalacji:
-```powershell
-kubectl version --client
-helm version
-```
+2. Zainstaluj narzędzia:
+
+
 
 ## Sprzątanie
 
@@ -85,16 +82,6 @@ Gdy skończysz pracę z laboratorium, usuń wszystkie utworzone zasoby:
 ```bash
 terraform destroy
 ```
-
-## Uwagi dotyczące bezpieczeństwa
-
-- Zmień domyślne hasło w terraform.tfvars
-- Rozważ użycie Azure Key Vault dla wrażliwych danych
-- Maszyna wirtualna jest dostępna z internetu przez publiczny IP - rozważ dodanie reguł NSG
-- W środowisku produkcyjnym rozważ:
-  - Włączenie szyfrowania dysków
-  - Użycie hosta bastion
-  - Wdrożenie bardziej restrykcyjnych reguł bezpieczeństwa sieci
 
 ## Rozwiązywanie problemów
 

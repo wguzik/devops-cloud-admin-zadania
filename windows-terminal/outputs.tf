@@ -1,14 +1,29 @@
 output "public_ip" {
   description = "Public IP address of the VM"
-  value       = azurerm_public_ip.pip.ip_address
+  value       = module.virtual_machine.vm_public_ip
 }
 
 output "vm_name" {
   description = "Name of the Virtual Machine"
-  value       = azurerm_windows_virtual_machine.vm.name
+  value       = module.virtual_machine.vm_name
+}
+
+output "vm_secret_username" {
+  description = "Name of the secret for the username"
+  value       = module.virtual_machine.vm_secret_username
+}
+
+output "vm_secret_password" {
+  description = "Name of the secret for the password"
+  value       = module.virtual_machine.vm_secret_password
 }
 
 output "resource_group_name" {
   description = "Name of the resource group"
-  value       = azurerm_resource_group.rg.name
+  value       = module.resource_group.name
 } 
+
+output "key_vault_name" {
+  description = "Name of the key vault"
+  value       = module.keyvault.key_vault_name
+}

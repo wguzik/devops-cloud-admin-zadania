@@ -12,10 +12,10 @@ variable "location" {
 variable "admin_username" {
   type        = string
   description = "Admin username for the VM"
+  default     = "meritouser"
 }
 
-variable "admin_password" {
+variable "subscription_id" {
   type        = string
-  description = "Admin password for the VM"
-  sensitive   = true
-} 
+  description = "Azure subscription ID"
+}
