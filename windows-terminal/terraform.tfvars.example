@@ -1,0 +1,3 @@
+prefix         = "merito"
+location       = "northeurope"
+subscription_id = YourSubscriptionID
