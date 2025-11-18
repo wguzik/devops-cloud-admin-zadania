@@ -5,6 +5,9 @@
 # Login - omiń w przypadku cloud shell
 # az login
 
+# Sprawdzamy dostępne lokalizacje centrów dla naszego konta
+az account list-locations -o Table
+
 # Zmienne oraz genereowanie nazw obiektów
 PROJECT="mywg"
 OWNER="WG"
