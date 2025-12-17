@@ -1,0 +1,25 @@
+# Azure Subscription
+subscription_id = "abc-abc"
+
+# Owner identifier (2-10 lowercase alphanumeric characters)
+# This will be used to generate unique resource names
+owner = "wg"  # Change this to your initials or short name
+
+# Resource Group and Location
+resource_group_name = "rg-invoice-etl-dev"
+location            = "eastus"
+
+# SQL Server Admin Credentials (CHANGE THESE!)
+sql_admin_username = "sqladmin"
+sql_admin_password = "YourSecurePassword123!"
+
+# SQL Database
+sql_database_name = "InvoicesDB"
+
+# Tags
+tags = {
+  Environment = "Development"
+  Project     = "InvoiceETL"
+  ManagedBy   = "Terraform"
+  Owner       = "DevOps"
+}
